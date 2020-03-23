@@ -1,19 +1,28 @@
 import axios from "axios";
 
 export default {
-    fetchQuery: async () => {
+    fetchQuery: async (searchValue) => {
+        const count = 1;
         return await axios.get('api/search', {
-            // params: {
-            //     query
-            // }
+            params: {
+                searchValue
+            }
         })
             .then(res => {
                 console.log('fetchQuery call hit');
-                console.log(res.data);
-                return res.json(res.data);
+                const hits = res.data.hits;
+                console.log(hits);
+                
+                return hits.map(r => {
+                    console.log(r)
+                    console.log(r.recipe.label)
+                    // return {
+                    //     name:r.recipe.label
+                    // }
+                })
             })
             .catch(err => {
-                console.log(err)
+                console.log(err.message)
             })
     }
 
