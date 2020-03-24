@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Col, Jumbotron, Container, Button, Form, Card } from 'react-bootstrap';
 import API from '../utils/API';
-//import { response } from "express";
 
 const Search = () => {
-    const [recipes, setRecipes] = useState([]);
+    const [recipes, setRecipes] = useState({});
     const [searchValue, setSearchValue] = useState('');
-
+    const [healthLabels, setHealthLabels] = useState([]);
 
     useEffect(() => {
       console.log('useEffect call = searchValue' + searchValue)
         loadRecipes()
-        console.log('useEffect call = recipes' + recipes)
+        console.log(recipes)
     }, []);
 
     const loadRecipes = event => {
@@ -21,10 +20,11 @@ const Search = () => {
        }
         API.fetchQuery(searchValue)
             .then(response => {
-                console.log('Search page = API fetchquery response ' +response);
-                console.log(response.data)
-                setRecipes(response.data);
-                console.log(recipes);
+                console.log(`subtitle from recipe indexed at 0 : ${response[0].subtitle}`)
+                setRecipes(response);
+                setHealthLabels()
+                console.log(`RECIPE SET TO: ${JSON.stringify(recipes)}`);
+                //Array.from(response.)
                 return response;
             })
             .catch(err => {
@@ -47,7 +47,7 @@ const Search = () => {
                       name='query'
                       size="mlg"
                       type="text"
-                      placeholder="Booty"
+                      placeholder="Paleo"
                       onChange= { e => setSearchValue(e.target.value) }
                     />
                     <Button
@@ -56,22 +56,30 @@ const Search = () => {
                   </Col>
                 </Form.Row>
               </Form.Group>
-              <h1>
-
-              </h1>
               <br></br>
-              <Card style={{ width: '18rem' }}>
-                <Card.Body>
-                  <Card.Title>Title </Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
-                  <Card.Text>
-                    Some quick example text to build on the card title and make up the bulk of
-                    the card's content.
-                  </Card.Text>
-                  <Card.Link href="#">Card Link</Card.Link>
-                  <Card.Link href="#">Another Link</Card.Link>
-                </Card.Body>
-              </Card>
+            {recipes.length ? ( 
+              <ul>
+                {recipes.map(recipe => (
+                  <ul key = {recipe.name}>
+                    <Card style={{ width: '18rem' }}>
+                    <Card.Img variant="top" src={recipe.image} alt={recipe.name}/>
+                      <Card.Body>
+                        <Card.Title>{recipe.name}</Card.Title>
+                          <Card.Subtitle className="mb-2 text-muted">{recipe.subtitle}</Card.Subtitle>
+                            <Card.Text>
+                            {recipe.ingredients}
+                          </Card.Text>
+                        <Card.Link href={recipe.url}>See Recipe</Card.Link>
+                        <Card.Link href="#">Another Link</Card.Link>
+                      </Card.Body>
+                    </Card>
+                  </ul>
+                ))}
+              </ul>
+
+              ) : (
+                <h2>No results</h2>
+              )}
           </Container>
         </Jumbotron>
       </>

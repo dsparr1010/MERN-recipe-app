@@ -1,32 +1,38 @@
 import axios from "axios";
 
+//named function that maps through multiple arrays from API response
+// function mapItems(item) {
+//     item.map(x => {
+//         console.log(x)
+//         return x;
+//     })
+// }
+
 export default {
     fetchQuery: async (searchValue) => {
-        const count = 1;
         return await axios.get('api/search', {
             params: {
                 searchValue
             }
         })
-            .then(res => {
-                console.log('fetchQuery call hit');
-                const hits = res.data.hits;
-                console.log(hits);
-                
-                return hits.map(r => {
-                    console.log(r)
-                    console.log(r.recipe.label)
-                    // return {
-                    //     name:r.recipe.label
-                    // }
-                })
+        .then(res => {
+            const hits = res.data.hits;
+            console.log(hits);
+            
+            return hits.map(r => {
+                //const healthLabels = mapItems(r.recipe.healthLabels)
+                console.log(r)
+                return {
+                    name:r.recipe.label,
+                    image:r.recipe.image,
+                    url:r.recipe.url,
+                    subtitle:r.recipe.healthLabels,
+                    ingredients:r.recipe.ingredientLines
+                }
             })
-            .catch(err => {
-                console.log(err.message)
-            })
+        })
+        .catch(err => {
+            console.log(err.message)
+        })
     }
-
-
-
-
 };
