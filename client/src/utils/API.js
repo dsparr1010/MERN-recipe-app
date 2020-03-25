@@ -1,4 +1,5 @@
 import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
 
 //named function that maps through multiple arrays from API response
 // function mapItems(item) {
@@ -10,9 +11,9 @@ import axios from "axios";
 
 export default {
     fetchQuery: async (searchValue) => {
-        return await axios.get('api/search', {
+        return await axios.get('/api/search', {
             params: {
-                searchValue
+                searchValue: searchValue
             }
         })
         .then(res => {
@@ -23,6 +24,9 @@ export default {
                 //const healthLabels = mapItems(r.recipe.healthLabels)
                 console.log(r)
                 return {
+                    cardId:(uuidv4()),
+                    subtitleId:(uuidv4()),
+                    ingredientsId:(uuidv4()),
                     name:r.recipe.label,
                     image:r.recipe.image,
                     url:r.recipe.url,
